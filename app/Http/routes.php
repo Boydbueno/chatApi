@@ -11,6 +11,7 @@
 |
 */
 
+use App\Chat;
 use App\Chatroom;
 use Illuminate\Http\Request;
 
@@ -34,6 +35,21 @@ $app->post('chatrooms', function(Request $request) {
     $chatroom = Chatroom::create($request->all());
 
     return $chatroom;
+});
+
+$app->post('chatrooms/{id}/chat', function(Request $request, $chatroomId) {
+
+    $chatroom = Chatroom::find($chatroomId);
+
+    $chat = new Chat($request->all());
+
+    $chatroom->chats()->save($chat);
+
+    return $chat;
+});
+
+$app->get('chatrooms/{id}/chat', function($chatroomId) {
+    return Chat::where('chatroom_id', $chatroomId)->get();
 });
 
 $app->post('login', function(Request $request) {
